@@ -4,7 +4,7 @@
 
 - `msql.lark` tiene la gramática del lenguaje (MAKE, GET, PUT, DROP).
 - `compilador.py` lee cada línea, la analiza con Lark y traduce el árbol a SQL con un `Transformer`.
-- `examples/` tiene los ejemplos `.msql` y los `.sql` que genera el compilador.
+- `examples/` tiene los ejemplos `.msql`. Al correr el compilador se crea un `.sql` por cada uno.
 
 ## Cómo correrlo
 
