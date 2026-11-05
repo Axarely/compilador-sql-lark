@@ -1,0 +1,44 @@
+// Gramática del pseudolenguaje (una instrucción por línea).
+// El sufijo "i" en las palabras clave las hace insensibles a mayúsculas.
+
+?start: make | get | put | drop
+
+// MAKE users (id id, email text!)
+make: "MAKE"i NAME "(" column ("," column)* ")"
+column: NAME NAME NOT_NULL?
+NOT_NULL: "!"
+
+// GET email FROM users WHERE ... SORT campo DESC TOP 10
+get: "GET"i fields "FROM"i NAME where? sort? top?
+fields: ALL | NAME ("," NAME)*
+ALL: "ALL"i
+sort: "SORT"i NAME DIRECTION?
+DIRECTION: "ASC"i | "DESC"i
+top: "TOP"i INT
+
+// PUT users (campo = valor, ...) [WHERE ...]
+put: "PUT"i NAME "(" assignment ("," assignment)* ")" where?
+assignment: NAME "=" value
+
+// DROP users [WHERE ...]
+drop: "DROP"i NAME where?
+
+// Condiciones: AND tiene más prioridad que OR, igual que en SQL
+where: "WHERE"i condition
+?condition: and_cond
+          | condition "OR"i and_cond   -> or_cond
+?and_cond: comparison
+         | and_cond "AND"i comparison  -> and_join
+comparison: NAME OP value
+OP: "!=" | "<>" | ">=" | "<=" | "=" | ">" | "<"
+
+value: SINGLE_STRING | DOUBLE_STRING | SIGNED_NUMBER | BOOL
+BOOL: "true"i | "false"i
+SINGLE_STRING: /'[^']*'/
+DOUBLE_STRING: /"[^"]*"/
+
+%import common.CNAME -> NAME
+%import common.INT
+%import common.SIGNED_NUMBER
+%import common.WS_INLINE
+%ignore WS_INLINE
